@@ -1,99 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spidy Beamz URL Shortener</title>
   <style>
     body {
-      background-color: #121212;
-      color: #e0e0e0;
+      background-color: #111;
+      color: #eee;
       font-family: 'Segoe UI', sans-serif;
+      padding: 2rem;
       text-align: center;
-      padding: 40px;
     }
-
     h1 {
-      color: #00ffff;
-      margin-bottom: 10px;
+      color: #00ccff;
     }
-
-    input[type="text"] {
-      padding: 12px;
-      width: 70%;
-      max-width: 500px;
-      border-radius: 6px;
-      border: 1px solid #00ffff;
-      background-color: #1a1a1a;
+    input, select, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 8px;
+      border: none;
+    }
+    input, select {
+      width: 80%;
+      background: #222;
       color: #fff;
     }
-
-    .btn {
-      background-color: #222;
-      color: #00ffff;
-      border: 1px solid #00ffff;
-      padding: 12px 25px;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #00ffff;
+    button {
+      background: #00ccff;
       color: #000;
+      font-weight: bold;
+      cursor: pointer;
     }
-
-    #output {
-      margin-top: 30px;
-      font-size: 1.1em;
-      color: #90ee90;
+    .output {
+      margin-top: 1rem;
+      background: #222;
+      padding: 1rem;
+      border-radius: 8px;
+      word-break: break-all;
     }
-
-    a {
-      color: #00ffea;
-      text-decoration: none;
-    }
-
     .footer {
-      margin-top: 60px;
-      font-size: 0.95em;
+      margin-top: 2rem;
+      color: #aaa;
+    }
+    a {
+      color: #00ccff;
     }
   </style>
 </head>
 <body>
-  <h1>Spidy Beamz URL Shortener</h1>
-  <p>Paste any Roblox URL below to shorten it:</p>
+  <h1>🔗 Spidy Beamz URL Shortener</h1>
+  <p>Select Link Type:</p>
+  <select id="type">
+    <option value="server">Private Server</option>
+    <option value="profile">Profile</option>
+    <option value="group">Group</option>
+  </select><br>
+  
+  <input type="text" id="inputUrl" placeholder="Paste fake Roblox URL here"><br>
+  <button onclick="shorten()">Shorten Now</button>
 
-  <input type="text" id="userInput" placeholder="Paste full Roblox URL here..."><br><br>
-  <button class="btn" onclick="shorten()">Shorten Link</button>
-
-  <div id="output"></div>
+  <div class="output" id="result"></div>
 
   <div class="footer">
-    Join our Discord: <a href="https://discord.gg/msWEpYXx" target="_blank">Spidy Beamz</a>
+    🔥 Join our Discord: <a href="https://discord.gg/msWEpYXx" target="_blank">Spidy Beamz</a>
   </div>
 
   <script>
     async function shorten() {
-      const input = document.getElementById("userInput").value.trim();
-      const output = document.getElementById("output");
+      const url = document.getElementById("inputUrl").value;
+      const type = document.getElementById("type").value;
+      if (!url) return alert("Paste a link first bro 😑");
 
-      if (!input.startsWith("http")) {
-        output.innerHTML = "⚠️ Enter a valid URL starting with http or https.";
-        return;
+      const encoded = encodeURIComponent(url);
+      const res = await fetch(`https://is.gd/create.php?format=simple&url=${encoded}`);
+      const shortLink = await res.text();
+
+      let template = "";
+
+      if (type === "server") {
+        template = `[https://www.roblox.com/share?code=80177c63cdc8614aa84be3cbd84b051a&type=Server](${shortLink})`;
+      } else if (type === "profile") {
+        template = `[https://www.roblox.com/users/3095250/profile](${shortLink})`;
+      } else if (type === "group") {
+        template = `[https://www.roblox.com/groups/2194003353](${shortLink})`;
       }
 
-      const api = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(input)}`;
-
-      output.innerHTML = "⏳ Shortening your link...";
-
-      try {
-        const res = await fetch(api);
-        const shortUrl = await res.text();
-        output.innerHTML = `<strong>Shortened URL:</strong> <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
-      } catch (err) {
-        output.innerHTML = "❌ Failed to shorten URL. Try again.";
-      }
+      document.getElementById("result").innerHTML = `
+        <p>✅ Your shortened markdown link:</p>
+        <code>${template}</code>
+      `;
     }
   </script>
 </body>
