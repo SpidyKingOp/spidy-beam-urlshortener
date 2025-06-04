@@ -17,6 +17,16 @@
       margin-bottom: 10px;
     }
 
+    input[type="text"] {
+      padding: 12px;
+      width: 70%;
+      max-width: 500px;
+      border-radius: 6px;
+      border: 1px solid #00ffff;
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+
     .btn {
       background-color: #222;
       color: #00ffff;
@@ -44,10 +54,6 @@
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
-
     .footer {
       margin-top: 60px;
       font-size: 0.95em;
@@ -56,12 +62,10 @@
 </head>
 <body>
   <h1>Spidy Beamz URL Shortener</h1>
-  <p>select the link type to get the url:</p>
-<input type="text" id="userInput" placeholder="Enter code or ID..." style="padding: 10px; width: 60%; max-width: 400px; border-radius: 6px; border: 1px solid #00ffff; background-color: #1a1a1a; color: #fff;"><br><br>
+  <p>Paste any Roblox URL below to shorten it:</p>
 
-<button class="btn" onclick="shorten('private')">Private Server</button>
-<button class="btn" onclick="shorten('profile')">Profile</button>
-<button class="btn" onclick="shorten('group')">Group</button>
+  <input type="text" id="userInput" placeholder="Paste full Roblox URL here..."><br><br>
+  <button class="btn" onclick="shorten()">Shorten Link</button>
 
   <div id="output"></div>
 
@@ -70,42 +74,27 @@
   </div>
 
   <script>
-  function getFinalURL(type, code) {
-    switch (type) {
-      case "private":
-        return `https://www.roblox.com/share?code=${code}&type=Server`;
-      case "profile":
-        return `https://www.roblox.com/users/${code}/profile`;
-      case "group":
-        return `https://www.roblox.com/groups/${code}`;
-      default:
-        return "";
+    async function shorten() {
+      const input = document.getElementById("userInput").value.trim();
+      const output = document.getElementById("output");
+
+      if (!input.startsWith("http")) {
+        output.innerHTML = "⚠️ Enter a valid URL starting with http or https.";
+        return;
+      }
+
+      const api = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(input)}`;
+
+      output.innerHTML = "⏳ Shortening your link...";
+
+      try {
+        const res = await fetch(api);
+        const shortUrl = await res.text();
+        output.innerHTML = `<strong>Shortened URL:</strong> <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+      } catch (err) {
+        output.innerHTML = "❌ Failed to shorten URL. Try again.";
+      }
     }
-  }
-
-  async function shorten(type) {
-    const input = document.getElementById("userInput").value.trim();
-    const output = document.getElementById("output");
-
-    if (!input) {
-      output.innerHTML = "⚠️ Please enter a code or ID first.";
-      return;
-    }
-
-    const fullUrl = getFinalURL(type, input);
-    const api = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(fullUrl)}`;
-
-    output.innerHTML = "⏳ Shortening your link...";
-
-    try {
-      const res = await fetch(api);
-      const shortUrl = await res.text();
-      output.innerHTML = `<strong>${type.toUpperCase()}:</strong> <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
-    } catch (err) {
-      output.innerHTML = "❌ Failed to shorten URL. Try again later.";
-    }
-  }
-</script>
-
+  </script>
 </body>
 </html>
