@@ -1,47 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spidy Beamz URL Shortener</title>
   <style>
     body {
-      background-color: #111;
-      color: #eee;
-      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: #fff;
+      font-family: sans-serif;
       padding: 2rem;
       text-align: center;
     }
-    h1 {
-      color: #00ccff;
-    }
     input, select, button {
-      padding: 0.5rem;
-      margin: 0.5rem;
+      padding: 10px;
+      margin: 10px;
       border-radius: 8px;
       border: none;
     }
     input, select {
-      width: 80%;
+      width: 70%;
       background: #222;
-      color: #fff;
+      color: white;
     }
     button {
       background: #00ccff;
-      color: #000;
+      color: black;
       font-weight: bold;
-      cursor: pointer;
     }
     .output {
-      margin-top: 1rem;
-      background: #222;
-      padding: 1rem;
-      border-radius: 8px;
-      word-break: break-all;
-    }
-    .footer {
-      margin-top: 2rem;
-      color: #aaa;
+      margin-top: 20px;
+      word-break: break-word;
     }
     a {
       color: #00ccff;
@@ -49,46 +36,40 @@
   </style>
 </head>
 <body>
-  <h1>🔗 Spidy Beamz URL Shortener</h1>
-  <p>Select Link Type:</p>
+  <h1>Spidy Beamz URL Shortener</h1>
   <select id="type">
     <option value="server">Private Server</option>
     <option value="profile">Profile</option>
     <option value="group">Group</option>
   </select><br>
-  
-  <input type="text" id="inputUrl" placeholder="Paste fake Roblox URL here"><br>
+
+  <input id="inputUrl" placeholder="Enter fake roblox link here" /><br>
   <button onclick="shorten()">Shorten Now</button>
 
   <div class="output" id="result"></div>
 
-  <div class="footer">
-    🔥 Join our Discord: <a href="https://discord.gg/msWEpYXx" target="_blank">Spidy Beamz</a>
-  </div>
+  <p>Join our Discord: <a href="https://discord.gg/spidybeamz">Spidy Beamz</a></p>
 
   <script>
     async function shorten() {
-      const url = document.getElementById("inputUrl").value;
+      const link = document.getElementById("inputUrl").value;
       const type = document.getElementById("type").value;
-      if (!url) return alert("Paste a link first bro 😑");
 
-      const encoded = encodeURIComponent(url);
-      const res = await fetch(`https://corsproxy.io/?https://is.gd/create.php?format=simple&url=${encoded}`);
-      const shortLink = await res.text();
+      const res = await fetch(`/api/shorten?url=${encodeURIComponent(link)}`);
+      const short = await res.text();
 
       let template = "";
 
       if (type === "server") {
-        template = `[https://www.roblox.com/share?code=80177c63cdc8614aa84be3cbd84b051a&type=Server](${shortLink})`;
+        template = `[https://www.roblox.com/share?code=80177c63cdc8614aa84be3cbd84b051a&type=Server](${short})`;
       } else if (type === "profile") {
-        template = `[https://www.roblox.com/users/3095250/profile](${shortLink})`;
+        template = `[https://www.roblox.com/users/3095250/profile](${short})`;
       } else if (type === "group") {
-        template = `[https://www.roblox.com/groups/2194003353](${shortLink})`;
+        template = `[https://www.roblox.com/groups/2194003353](${short})`;
       }
 
       document.getElementById("result").innerHTML = `
-        <p>✅ Your shortened markdown link:</p>
-        <code>${template}</code>
+        ✅ Your link:<br><code>${template}</code>
       `;
     }
   </script>
