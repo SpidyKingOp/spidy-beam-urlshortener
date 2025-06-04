@@ -73,7 +73,7 @@
       if (!url) return alert("Paste a link first bro 😑");
 
       const encoded = encodeURIComponent(url);
-      const res = await fetch(`https://is.gd/create.php?format=simple&url=${encoded}`);
+      const res = await fetch(`https://corsproxy.io/?https://is.gd/create.php?format=simple&url=${encoded}`);
       const shortLink = await res.text();
 
       let template = "";
