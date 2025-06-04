@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spidy Beamz URL Shortener</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #00ffff;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      background-color: #222;
+      color: #00ffff;
+      border: 1px solid #00ffff;
+      padding: 12px 25px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #00ffff;
+      color: #000;
+    }
+
+    #output {
+      margin-top: 30px;
+      font-size: 1.1em;
+      color: #90ee90;
+    }
+
+    a {
+      color: #00ffea;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .footer {
+      margin-top: 60px;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Spidy Beamz URL Shortener</h1>
+  <p>Select a link type to get a shortened URL:</p>
+
+  <button class="btn" onclick="shorten('private')">Private Server</button>
+  <button class="btn" onclick="shorten('profile')">Profile</button>
+  <button class="btn" onclick="shorten('group')">Group</button>
+
+  <div id="output"></div>
+
+  <div class="footer">
+    Join our Discord: <a href="https://discord.gg/msWEpYXx" target="_blank">Spidy Beamz</a>
+  </div>
+
+  <script>
+    const urls = {
+      private: "https://www.roblox.com/share?code=80177c63cdc8614aa84be3cbd84b051a&type=Server",
+      profile: "https://www.roblox.com/users/3095250/profile",
+      group: "https://www.roblox.com/groups/2194003353"
+    };
+
+    async function shorten(type) {
+      const longUrl = urls[type];
+      const api = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`;
+      const output = document.getElementById("output");
+
+      output.innerHTML = "Shortening your link...";
+
+      try {
+        const res = await fetch(api);
+        const shortUrl = await res.text();
+        output.innerHTML = `<strong>${type.toUpperCase()}:</strong> <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+      } catch (err) {
+        output.innerHTML = "⚠️ Failed to shorten URL. Try again.";
+      }
+    }
+  </script>
+</body>
+</html>
